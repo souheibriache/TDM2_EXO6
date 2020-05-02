@@ -1,4 +1,4 @@
-package com.example.notesmanager
+package com.example.exo6
 
 import android.os.Handler
 import android.os.Looper

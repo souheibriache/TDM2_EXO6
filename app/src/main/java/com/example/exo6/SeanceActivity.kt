@@ -10,7 +10,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notesmanager.AppExecutors
 import kotlinx.android.synthetic.main.activity_main.*
 
 class SeanceActivity : AppCompatActivity() {
