@@ -46,9 +46,9 @@ interface SeanceDao {
     fun addSeance(seance: Seance)
 
     @Update
-    fun modifyNote(seance: Seance)
+    fun modifySeance(seance: Seance)
 
     @Delete
-    fun deleteNote(seance: Seance)
+    fun deleteSeance(seance: Seance)
 
 }
