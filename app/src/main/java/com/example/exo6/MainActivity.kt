@@ -1,32 +1,38 @@
 package com.example.exo6
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notesmanager.AppExecutors
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.IOException
 import java.io.InputStream
-import java.io.InputStreamReader
-import java.lang.StringBuilder
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
     var checkSpinner : Int = 0
     var dataList = arrayListOf<DataCount>()
     var currentPosition = 0
+    private val PERMISSION_CODE: Int = 1000
 
     lateinit var adapter: GlobalDataAdapter
     lateinit var layoutManager : LinearLayoutManager
@@ -115,6 +121,63 @@ class MainActivity : AppCompatActivity() {
     fun addSeance(seance: Seance) {
         AppExecutors.instance!!.diskIO().execute {
             seanceDatabase.seanceDao().addSeance(seance)
+
+            AppExecutors.instance!!.mainThread().execute( Runnable {
+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                    != PackageManager.PERMISSION_GRANTED) {
+                    val permission = arrayOf(Manifest.permission.WRITE_CALENDAR)
+                    requestPermissions(permission, PERMISSION_CODE)
+                }else {
+                    addCalendar(seance)
+                }
+
+            })
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun addCalendar(seance : Seance) {
+
+        val jour = seance.jour
+        val hD = seance.hDebut
+        val hF = seance.hFin
+
+        val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH)
+
+        val startCal = Calendar.getInstance()
+        startCal.time = sdf.parse("$jour $hD")
+
+        val endCal = Calendar.getInstance()
+        endCal.time = sdf.parse("$jour $hF")
+
+        val values = ContentValues().apply {
+            val calID: Long = 1
+            put(CalendarContract.Events.DTSTART, startCal.timeInMillis)
+            put(CalendarContract.Events.DTEND, endCal.timeInMillis)
+            put(CalendarContract.Events.TITLE, seance.module)
+            put(CalendarContract.Events.CALENDAR_ID, calID)
+            put(CalendarContract.Events.DESCRIPTION, "${seance.enseignant} ${seance.salle}")
+            put(CalendarContract.Events.EVENT_TIMEZONE, "Africa/Algiers")
+        }
+        val uri: Uri? = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+
+    }
+
+
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            PERMISSION_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+
+                } else {
+                    Toast.makeText(this, "Vous ne disposez pas des permissions necessaires", Toast.LENGTH_SHORT)
+                }
+                return
+            }
         }
     }
 
