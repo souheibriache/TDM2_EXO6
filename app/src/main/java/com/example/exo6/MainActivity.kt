@@ -8,10 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notesmanager.AppExecutors
@@ -88,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         val seances = jsonObject.getJSONArray("seances")
 
-        Log.i("jssooooo", seances.toString())
+        Toast.makeText(this, "Data is loaded succefully", Toast.LENGTH_LONG).show()
 
         if (seances != null){
             try {
