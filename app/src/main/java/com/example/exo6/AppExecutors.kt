@@ -56,7 +56,7 @@ class AppExecutors private constructor(
     }
 
     companion object {
-        // For Singleton instantiation
+
         private val LOCK = Any()
         private var sInstance: AppExecutors? = null
         val instance: AppExecutors?

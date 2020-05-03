@@ -40,7 +40,7 @@ class SeanceActivity : AppCompatActivity() {
         getData(title, value)
     }
 
-    fun getData(title : String, value : String){
+    private fun getData(title : String, value : String){
         when(title){
             "Jour" -> getJourData(value)
             "Semaine" -> getWeekData(value)
@@ -51,7 +51,7 @@ class SeanceActivity : AppCompatActivity() {
     }
 
 
-    fun getWeekData(week : String){
+    private fun getWeekData(week : String){
         AppExecutors.instance!!.diskIO().execute(Runnable {
             dataList.clear()
             dataList.addAll(seanceDatabase.seanceDao().findSeancesByWeek(week))
@@ -62,7 +62,7 @@ class SeanceActivity : AppCompatActivity() {
         })
     }
 
-    fun getJourData(day : String){
+    private fun getJourData(day : String){
         AppExecutors.instance!!.diskIO().execute(Runnable {
             dataList.clear()
             dataList.addAll(seanceDatabase.seanceDao().findSeancesByDay(day))
@@ -73,7 +73,7 @@ class SeanceActivity : AppCompatActivity() {
         })
     }
 
-    fun getModuleData(module : String){
+    private fun getModuleData(module : String){
         AppExecutors.instance!!.diskIO().execute(Runnable {
             dataList.clear()
             dataList.addAll(seanceDatabase.seanceDao().findSeancesByModule(module))
@@ -84,7 +84,7 @@ class SeanceActivity : AppCompatActivity() {
         })
     }
 
-    fun getEnsData(ens : String){
+    private fun getEnsData(ens : String){
         AppExecutors.instance!!.diskIO().execute(Runnable {
             dataList.clear()
             dataList.addAll(seanceDatabase.seanceDao().findSeancesByEnseignant(ens))
@@ -95,7 +95,7 @@ class SeanceActivity : AppCompatActivity() {
         })
     }
 
-    fun getSalleData(salle : String){
+    private fun getSalleData(salle : String){
         AppExecutors.instance!!.diskIO().execute(Runnable {
             dataList.clear()
             dataList.addAll(seanceDatabase.seanceDao().findSeancesBySalle(salle))
